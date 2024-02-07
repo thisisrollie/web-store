@@ -41,7 +41,7 @@ public class RegistrationServlet extends HttpServlet {
                 .build();
         try {
             userService.create(userDto);
-            resp.sendRedirect("/temp.html");
+            resp.sendRedirect(UrlPath.LOGIN);
         } catch (ValidationException exception) {
             req.setAttribute("errors", exception.getErrors());
             doGet(req, resp);

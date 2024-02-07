@@ -2,11 +2,10 @@ package com.rolliedev.service;
 
 import com.rolliedev.dao.UserDao;
 import com.rolliedev.dto.UserDto;
-import com.rolliedev.entity.Gender;
-import com.rolliedev.entity.Role;
 import com.rolliedev.entity.User;
 import com.rolliedev.exception.ValidationException;
-import com.rolliedev.util.LocalDateFormatter;
+import com.rolliedev.mapper.CreateUserMapper;
+import com.rolliedev.mapper.UserMapper;
 import com.rolliedev.validator.CreateUserValidator;
 import lombok.NoArgsConstructor;
 
@@ -21,19 +20,12 @@ public class UserService {
 
     private final UserDao userDao = UserDao.getInstance();
     private final CreateUserValidator createUserValidator = CreateUserValidator.getInstance();
+    private final CreateUserMapper createUserMapper = CreateUserMapper.getInstance();
+    private final UserMapper userMapper = UserMapper.getInstance();
 
     public Optional<UserDto> login(String email, String password) {
         return userDao.findByEmailAndPassword(email, password)
-                .map(user -> UserDto.builder()
-                        .id(user.getId())
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .birthday(user.getBirthday().toString())
-                        .email(user.getEmail())
-                        .password(user.getPassword())
-                        .role(user.getRole().name())
-                        .gender(user.getGender().name())
-                        .build());
+                .map(userMapper::mapFrom); // user -> userDto
     }
 
     public Long create(UserDto userDto) {
@@ -43,15 +35,7 @@ public class UserService {
             throw new ValidationException(validationResult.getErrors());
         }
         // 2. mapping
-        User user = User.builder()
-                .firstName(userDto.getFirstName())
-                .lastName(userDto.getLastName())
-                .birthday(LocalDateFormatter.format(userDto.getBirthday()))
-                .email(userDto.getEmail())
-                .password(userDto.getPassword())
-                .role(Role.valueOf(userDto.getRole()))
-                .gender(Gender.valueOf(userDto.getGender()))
-                .build();
+        User user = createUserMapper.mapFrom(userDto);
         // 3. saving
         userDao.save(user);
         // 4. returning id

@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
@@ -37,19 +39,23 @@ public class UserDao {
             var resultSet = preparedStatement.executeQuery();
             User user = null;
             if (resultSet.next()) {
-                user = User.builder()
-                        .id(resultSet.getObject("id", Long.class))
-                        .firstName(resultSet.getObject("first_name", String.class))
-                        .firstName(resultSet.getObject("last_name", String.class))
-                        .birthday(resultSet.getObject("birthday", Date.class).toLocalDate())
-                        .email(resultSet.getObject("email", String.class))
-                        .password(resultSet.getObject("password", String.class))
-                        .role(Role.valueOf(resultSet.getObject("role", String.class)))
-                        .gender(Gender.valueOf(resultSet.getObject("gender", String.class)))
-                        .build();
+                user = buildEntity(resultSet);
             }
             return Optional.ofNullable(user);
         }
+    }
+
+    private User buildEntity(ResultSet resultSet) throws SQLException {
+        return User.builder()
+                .id(resultSet.getObject("id", Long.class))
+                .firstName(resultSet.getObject("first_name", String.class))
+                .firstName(resultSet.getObject("last_name", String.class))
+                .birthday(resultSet.getObject("birthday", Date.class).toLocalDate())
+                .email(resultSet.getObject("email", String.class))
+                .password(resultSet.getObject("password", String.class))
+                .role(Role.valueOf(resultSet.getObject("role", String.class)))
+                .gender(Gender.valueOf(resultSet.getObject("gender", String.class)))
+                .build();
     }
 
     @SneakyThrows
