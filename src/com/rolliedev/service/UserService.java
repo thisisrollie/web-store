@@ -10,6 +10,8 @@ import com.rolliedev.util.LocalDateFormatter;
 import com.rolliedev.validator.CreateUserValidator;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
+
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
@@ -19,6 +21,20 @@ public class UserService {
 
     private final UserDao userDao = UserDao.getInstance();
     private final CreateUserValidator createUserValidator = CreateUserValidator.getInstance();
+
+    public Optional<UserDto> login(String email, String password) {
+        return userDao.findByEmailAndPassword(email, password)
+                .map(user -> UserDto.builder()
+                        .id(user.getId())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .birthday(user.getBirthday().toString())
+                        .email(user.getEmail())
+                        .password(user.getPassword())
+                        .role(user.getRole().name())
+                        .gender(user.getGender().name())
+                        .build());
+    }
 
     public Long create(UserDto userDto) {
         // 1. validation

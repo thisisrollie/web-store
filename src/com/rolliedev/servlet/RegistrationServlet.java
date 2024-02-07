@@ -5,6 +5,8 @@ import com.rolliedev.entity.Gender;
 import com.rolliedev.entity.Role;
 import com.rolliedev.exception.ValidationException;
 import com.rolliedev.service.UserService;
+import com.rolliedev.util.JspHelper;
+import com.rolliedev.util.UrlPath;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,7 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet("/registration")
+@WebServlet(UrlPath.REGISTRATION)
 public class RegistrationServlet extends HttpServlet {
 
     private final UserService userService = UserService.getInstance();
@@ -22,7 +24,7 @@ public class RegistrationServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("roles", Role.values());
         req.setAttribute("genders", Gender.values());
-        req.getRequestDispatcher("WEB-INF/jsp/registration.jsp")
+        req.getRequestDispatcher(JspHelper.getPath("registration"))
                 .forward(req, resp);
     }
 
