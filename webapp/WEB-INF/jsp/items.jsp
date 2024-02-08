@@ -8,6 +8,7 @@
 <body>
     <c:forEach var="item" items="${requestScope.items}">
         <div>
+            <img height="300" width="300" src="${pageContext.request.contextPath}/images/${item.image}" alt="${item.name}">
             <div>
                 <span>Description:</span>
                 <p>${item.description}</p>
