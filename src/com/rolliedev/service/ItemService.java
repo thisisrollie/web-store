@@ -6,6 +6,7 @@ import com.rolliedev.mapper.ItemMapper;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -22,6 +23,11 @@ public class ItemService {
         return items.stream()
                 .map(itemMapper::mapFrom)
                 .toList();
+    }
+
+    public Optional<ItemDto> findById(Long id) {
+        return itemDao.findById(id)
+                .map(itemMapper::mapFrom);
     }
 
     public static ItemService getInstance() {

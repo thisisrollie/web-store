@@ -10,19 +10,26 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class ItemDao {
+public class ItemDao implements Dao<Long, Item> {
 
     private static final ItemDao INSTANCE = new ItemDao();
     private static final String FIND_ALL_SQL = """
             SELECT id, name, image, price, quantity, description
+            FROM item;
+            """;
+    private static final String FIND_BY_ID_SQL = """
+            SELECT id, name, image, price, quantity, description
             FROM item
+            WHERE id = ?;
             """;
 
     @SneakyThrows
+    @Override
     public List<Item> findAll() {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(FIND_ALL_SQL)) {
@@ -33,6 +40,26 @@ public class ItemDao {
             }
             return items;
         }
+    }
+
+    @SneakyThrows
+    @Override
+    public Optional<Item> findById(Long id) {
+        try (var connection = ConnectionManager.get();
+             var preparedStatement = connection.prepareStatement(FIND_BY_ID_SQL)) {
+            preparedStatement.setObject(1, id);
+
+            var resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return Optional.of(buildEntity(resultSet));
+            }
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    public Item save(Item entity) {
+        return null;
     }
 
     private Item buildEntity(ResultSet resultSet) throws SQLException {

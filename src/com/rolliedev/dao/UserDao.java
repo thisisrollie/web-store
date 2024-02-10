@@ -10,13 +10,15 @@ import lombok.SneakyThrows;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static lombok.AccessLevel.PRIVATE;
 
 @NoArgsConstructor(access = PRIVATE)
-public class UserDao {
+public class UserDao implements Dao<Long, User> {
 
     private static final UserDao INSTANCE = new UserDao();
     private static final String SAVE_SQL = """
@@ -45,20 +47,18 @@ public class UserDao {
         }
     }
 
-    private User buildEntity(ResultSet resultSet) throws SQLException {
-        return User.builder()
-                .id(resultSet.getObject("id", Long.class))
-                .firstName(resultSet.getObject("first_name", String.class))
-                .firstName(resultSet.getObject("last_name", String.class))
-                .birthday(resultSet.getObject("birthday", Date.class).toLocalDate())
-                .email(resultSet.getObject("email", String.class))
-                .password(resultSet.getObject("password", String.class))
-                .role(Role.valueOf(resultSet.getObject("role", String.class)))
-                .gender(Gender.valueOf(resultSet.getObject("gender", String.class)))
-                .build();
+    @Override
+    public List<User> findAll() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Optional<User> findById(Long id) {
+        return Optional.empty();
     }
 
     @SneakyThrows
+    @Override
     public User save(User entity) {
         try (var connection = ConnectionManager.get();
              var preparedStatement = connection.prepareStatement(SAVE_SQL, RETURN_GENERATED_KEYS)) {
@@ -78,6 +78,19 @@ public class UserDao {
 
             return entity;
         }
+    }
+
+    private User buildEntity(ResultSet resultSet) throws SQLException {
+        return User.builder()
+                .id(resultSet.getObject("id", Long.class))
+                .firstName(resultSet.getObject("first_name", String.class))
+                .firstName(resultSet.getObject("last_name", String.class))
+                .birthday(resultSet.getObject("birthday", Date.class).toLocalDate())
+                .email(resultSet.getObject("email", String.class))
+                .password(resultSet.getObject("password", String.class))
+                .role(Role.valueOf(resultSet.getObject("role", String.class)))
+                .gender(Gender.valueOf(resultSet.getObject("gender", String.class)))
+                .build();
     }
 
     public static UserDao getInstance() {
