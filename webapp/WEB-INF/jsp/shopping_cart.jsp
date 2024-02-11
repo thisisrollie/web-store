@@ -26,9 +26,9 @@
                         <label>Quantity:
                             <input type="hidden" name="itemId" value="${cartItem.item.id}">
                             <input type="number"
-                                   name="item-${cartItem.item.id}"
+                                   name="QItem-${cartItem.item.id}"
                                    value="${cartItem.quantity}"
-                                   min="1"
+                                   min="0"
                                    max="${cartItem.item.quantity}"
                             >
                         </label>
@@ -37,9 +37,9 @@
                     <hr>
                 </c:forEach>
                 <span>Total price: €${requestScope.totalPrice}</span>
-                <button type="submit">Save</button>
+                <button type="submit">Save</button><br>
+                <a href="${pageContext.request.contextPath}/items">Back to items</a>
             </form>
-
         </c:otherwise>
     </c:choose>
 </body>

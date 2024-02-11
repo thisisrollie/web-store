@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -45,26 +46,34 @@ public class ShoppingCartServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         var session = req.getSession();
-        var cart = (Map<ItemDto, Integer>) session.getAttribute("cart");
-
         var parameterMap = req.getParameterMap();
-        var itemIds = parameterMap.get("itemId");
-        for (String itemId : itemIds) {
-            var item = itemService.findById(Long.valueOf(itemId));
-            if (item.isPresent()) {
-                var quantityParam = parameterMap.get("item-" + itemId);
-                if (quantityParam != null) {
-                    cart.put(item.get(), Integer.parseInt(quantityParam[0]));
-                } else {
-                    cart.merge(item.get(), 1, Integer::sum);
-                }
-            }
-        }
+        updateCart(session, parameterMap);
+
         if (parameterMap.keySet().size() == 1) {
             resp.sendRedirect(UrlPath.ITEMS);
             return;
         }
         doGet(req, resp);
+    }
+
+    private void updateCart(HttpSession session, Map<String, String[]> parameterMap) {
+        var cart = (Map<ItemDto, Integer>) session.getAttribute("cart");
+        var itemIds = parameterMap.get("itemId");
+
+        for (String itemId : itemIds) {
+            var item = itemService.findById(Long.valueOf(itemId)).get();
+            var quantityParam = parameterMap.get("QItem-" + itemId);
+            if (quantityParam != null) {
+                var updatedQuantity = Integer.parseInt(quantityParam[0]);
+                if (updatedQuantity == 0) {
+                    cart.remove(item);
+                } else {
+                    cart.put(item, updatedQuantity);
+                }
+            } else {
+                cart.merge(item, 1, Integer::sum);
+            }
+        }
     }
 
     private CartItemDto buildCartItem(ItemDto itemDto, int quantity) {
