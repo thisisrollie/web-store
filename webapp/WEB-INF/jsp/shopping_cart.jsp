@@ -13,9 +13,9 @@
         </c:when>
         <c:otherwise>
             <h1>Shopping cart:</h1>
-
+            <a href="${pageContext.request.contextPath}/items">Back to items</a>
             <form action="${pageContext.request.contextPath}/cart" method="post">
-                <c:forEach var="cartItem" items="${requestScope.cartItems}">
+                <c:forEach var="cartItem" items="${sessionScope.cartItems}">
                     <div>
                         <img height="300"
                              width="300"
@@ -36,9 +36,9 @@
                     </div>
                     <hr>
                 </c:forEach>
-                <span>Total price: €${requestScope.totalPrice}</span>
-                <button type="submit">Save</button><br>
-                <a href="${pageContext.request.contextPath}/items">Back to items</a>
+                <span>Total price: €${sessionScope.totalPrice}</span>
+                <button type="submit">Save changes</button><br>
+                <a href="${pageContext.request.contextPath}/orders/create">Proceed to Checkout</a>
             </form>
         </c:otherwise>
     </c:choose>

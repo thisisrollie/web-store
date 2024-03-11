@@ -1,7 +1,7 @@
 package com.rolliedev.validator;
 
 import com.rolliedev.dto.UserDto;
-import com.rolliedev.util.EmailChecker;
+import com.rolliedev.util.EmailValidator;
 import com.rolliedev.util.LocalDateFormatter;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +17,7 @@ public class CreateUserValidator implements Validator<UserDto> {
         if (!LocalDateFormatter.isValid(object.getBirthday())) {
             validationResult.add(Error.of("invalid.birthday", "The birthday is invalid"));
         }
-        if (!EmailChecker.isValid(object.getEmail())) {
+        if (!EmailValidator.isValid(object.getEmail())) {
             validationResult.add(Error.of("invalid.email", "The email is invalid"));
         }
         return validationResult;

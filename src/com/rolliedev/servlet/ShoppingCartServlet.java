@@ -33,9 +33,9 @@ public class ShoppingCartServlet extends HttpServlet {
             CartItemDto cartItem = buildCartItem(key, value);
             cartItems.add(cartItem);
         });
-        req.setAttribute("cartItems", cartItems);
-        // TODO: 2/9/2024 maybe save totalPrice in session scope ???
-        req.setAttribute("totalPrice", BigDecimal.valueOf(cartItems.stream()
+        // TODO: 3/9/2024 was it a good solution to put that in session ?
+        session.setAttribute("cartItems", cartItems);
+        session.setAttribute("totalPrice", BigDecimal.valueOf(cartItems.stream()
                 .mapToDouble(CartItemDto::getTotalPrice)
                 .sum()).setScale(2, RoundingMode.HALF_UP));
 
@@ -48,7 +48,6 @@ public class ShoppingCartServlet extends HttpServlet {
         var session = req.getSession();
         var parameterMap = req.getParameterMap();
         updateCart(session, parameterMap);
-
         if (parameterMap.keySet().size() == 1) {
             resp.sendRedirect(UrlPath.ITEMS);
             return;
@@ -59,7 +58,6 @@ public class ShoppingCartServlet extends HttpServlet {
     private void updateCart(HttpSession session, Map<String, String[]> parameterMap) {
         var cart = (Map<ItemDto, Integer>) session.getAttribute("cart");
         var itemIds = parameterMap.get("itemId");
-
         for (String itemId : itemIds) {
             var item = itemService.findById(Long.valueOf(itemId)).get();
             var quantityParam = parameterMap.get("QItem-" + itemId);

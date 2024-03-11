@@ -10,4 +10,5 @@ public class UrlPath {
     public static final String ITEMS = "/items";
     public static final String IMAGES = "/images";
     public static final String CART = "/cart";
+    public static final String ORDERS = "/orders";
 }

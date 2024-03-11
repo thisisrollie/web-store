@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @UtilityClass
-public class EmailChecker {
+public class EmailValidator {
 
     private static final String REGEX = "[a-zA-Z]\\w*@\\w{3,}\\.[a-z]{2,3}";
 
