@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Value;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Value
@@ -12,7 +12,7 @@ import java.util.List;
 public class OrderDto {
 
     Long id;
-    LocalDateTime date;
+    LocalDate date;
     String status;
     BigDecimal totalPrice;
     String deliverAddress;

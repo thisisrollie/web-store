@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @WebServlet(UrlPath.ORDERS)
@@ -42,7 +42,7 @@ public class OrderServlet extends HttpServlet {
         var cartItems = (List<CartItemDto>) session.getAttribute("cartItems");
         var totalPrice = (BigDecimal) session.getAttribute("totalPrice");
         var orderDto = OrderDto.builder()
-                .date(LocalDateTime.now())
+                .date(LocalDate.now())
                 .status(OrderStatus.IN_PROCESS.name())
                 .totalPrice(totalPrice)
                 .deliverAddress(req.getParameter("deliveryAddress"))
@@ -54,7 +54,7 @@ public class OrderServlet extends HttpServlet {
 
     private void createPayment(HttpServletRequest req, Long orderId) {
         PaymentDto paymentDto = PaymentDto.builder()
-                .date(LocalDateTime.now())
+                .date(LocalDate.now())
                 .status(PaymentStatus.PROCESSING)
                 .paymentMethod(req.getParameter("paymentMethod"))
                 .orderId(orderId)

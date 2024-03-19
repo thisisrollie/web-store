@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class Payment {
 
     private Long id;
-    private LocalDateTime date;
+    private LocalDate date;
     private PaymentStatus status;
     private PaymentMethod paymentMethod;
     private Long orderId;
